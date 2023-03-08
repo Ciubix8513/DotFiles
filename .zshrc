@@ -1,6 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
+ export PATH=$HOME/.cargo/bin:/usr/local/bin:$PATH
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -84,9 +83,9 @@ source $ZSH/oh-my-zsh.sh
 
 # Preferred editor for local and remote sessions
  if [[ -n $SSH_CONNECTION ]]; then
-   export EDITOR='nano'
+   export EDITOR='nvim'
  else
-   export EDITOR='nano'
+   export EDITOR='lvim'
  fi
 
 # Compilation flags
@@ -101,8 +100,19 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 export PROMPT='%F{111}%m:%F{2}%~ $%f '
+export DB_PASSWORD='DBPassword123_1'
 alias ping='ping -c 4'
 alias gping='ping 8.8.8.8'
 bindkey "^H" backward-delete-word
 bindkey  "^[[H"   beginning-of-line
 bindkey  "^[[F"   end-of-line
+
+eval $(thefuck --alias)
+alias vim='lvim'
+alias nano=lvim
+alias nanon=lvim
+alias naon=lvim
+alias nao=lvim
+alias cargo='cargo mommy'
+alias ls='exa'
+alias cat='bat'
