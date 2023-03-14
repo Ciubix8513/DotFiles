@@ -107,7 +107,6 @@ bindkey "^H" backward-delete-word
 bindkey  "^[[H"   beginning-of-line
 bindkey  "^[[F"   end-of-line
 
-eval $(thefuck --alias)
 alias vim='lvim'
 alias nano=lvim
 alias nanon=lvim

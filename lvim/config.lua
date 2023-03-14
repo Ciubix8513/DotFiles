@@ -2,7 +2,7 @@
  THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
  `lvim` is the global options object
 ]]
-
+vim.opt.spell = true
 -- vim options
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
