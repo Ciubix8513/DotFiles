@@ -6,3 +6,5 @@ mkdir ~/.config/kitty;
 cp ./kitty.conf ~/.config/kitty/kitty.conf;
 mkdir ~/.config/lvim;
 cp ./lvim/config.lua ~/.config/lvim/;
+mkdir ~/.config/i3/
+cp ./i3/config ~/.config/i3/config
