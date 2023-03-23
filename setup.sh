@@ -12,3 +12,7 @@ mkdir ~/.config/rofi/
 cp ./i3/config.rasi ~/.config/rofi/
 cp ./i3/maintheme.rasi ~/.config/rofi/
 cp ./i3/picom.conf ~/.config/
+mkdir ~/.config/polybar/
+cp ./i3/config.ini ~/.config/polybar/
+cp ./i3/Background.png ~/Pictures/
+
