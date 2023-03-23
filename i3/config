@@ -20,16 +20,18 @@ exec --no-startup-id dex --autostart --environment i3
 # screen before suspend. Use loginctl lock-session to lock your screen.
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 
-# NetworkManager is the most popular way to manage wireless networks on Linux,
-# and nm-applet is a desktop environment-independent system tray GUI for it.
-exec --no-startup-id nm-applet
-
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
+# Playerctl stuff (Pause/Play/Next/Prev)
+bindsym XF86AudioPause exec --no-startup-id playerctl pause
+bindsym XF86AudioPlay exec --no-startup-id playerctl play 
+bindsym XF86AudioPrev exec --no-startup-id playerctl previous
+bindsym XF86AudioNext exec --no-startup-id playerctl next 
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -44,15 +46,8 @@ bindsym $mod+Return exec kitty
 # kill focused window
 bindcode $mod+Shift+24 kill
 
-# start dmenu (a program launcher)
-# bindsym $mod+d exec --no-startup-id dmenu_run
-
-
 # A more modern dmenu replacement is rofi:
- bindcode $mod+40 exec "rofi -modi drun,run -show drun"
-# There also is i3-dmenu-desktop which only displays applications shipping a
-# .desktop file. It is a wrapper around dmenu, so you need that installed.
-# bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
+ bindcode $mod+40 exec "rofi -modi drun,run -show drun -theme maintheme"
 
 # change focus
 bindcode $mod+43 focus left
@@ -142,8 +137,6 @@ bindsym $mod+Shift+9 move container to workspace number $ws9; workspace number $
 bindsym $mod+Shift+0 move container to workspace number $ws10;workspace number $ws10
 
 
-
-
 # reload the configuration file
 bindcode $mod+Shift+54 reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
@@ -181,12 +174,12 @@ bindcode $mod+27 mode "resize"
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command polybar 
+  status_command polybar
+  mode invisible 
 }
 
 #keyboard layout
-exec setxkbmap us,ru,epo
-exec setxkbmap -option gpr:win_space_toggle
+exec setxkbmap -layout us,ru,epo -option gpr:win_space_toggle
 
 
 #screenshots
@@ -205,4 +198,27 @@ gaps inner 10px
 
 default_border pixel 2px
 default_floating_border pixel 1px
+
+focus_follows_mouse no
+
+workspace_auto_back_and_forth yes
+
+#background
+exec --no-startup-id feh --bg-fill ~/Pictures/Background.png
+
+#For transparancy and stuff
+exec --no-startup-id picom -b
+
+#colors
+# class                 border  backgr. text    indicator child_border
+client.focused          #9955b8 #000c18 #6688cc #9955b8   #9955b8
+client.focused_inactive #333333 #000c18 #6688cc #484e50   #5f676a
+client.unfocused        #333333 #222222 #888888 #292d2e   #222222
+client.urgent           #2f343a #900000 #ffffff #900000   #900000
+client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+
+client.background       #000c18
+
+
+
 
