@@ -9,4 +9,5 @@ Currently includes:
 - Picom
 - Rofi
 - Polybar
+
 The file setup.sh just puts all the config files in appropriate places, creating directories if necessary
