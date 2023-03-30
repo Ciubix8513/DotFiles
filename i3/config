@@ -179,7 +179,7 @@ bar {
 }
 
 #keyboard layout
-exec setxkbmap -layout us,ru,epo -option gpr:win_space_toggle
+exec --no-startup-id setxkbmap -layout us,ru,epo -option gpr:win_space_toggle
 
 
 #screenshots
@@ -212,13 +212,11 @@ exec --no-startup-id picom -b
 #colors
 # class                 border  backgr. text    indicator child_border
 client.focused          #9955b8 #000c18 #6688cc #9955b8   #9955b8
-client.focused_inactive #333333 #000c18 #6688cc #484e50   #5f676a
-client.unfocused        #333333 #222222 #888888 #292d2e   #222222
+client.focused_inactive #333333 #000c18 #6688cc #384887   #384887
+client.unfocused        #333333 #222222 #888888 #384887   #384887
 client.urgent           #2f343a #900000 #ffffff #900000   #900000
 client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 
 client.background       #000c18
 
-
-
-
+exec --no-startup-id ~/fixes/i3-unity-fix/build/lib/i3unityfix/i3unityfix.py & 
