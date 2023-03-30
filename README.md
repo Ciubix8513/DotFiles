@@ -11,3 +11,5 @@ Currently includes:
 - Polybar
 
 The file setup.sh just puts all the config files in appropriate places, creating directories if necessary
+
+For the font I use [my fork of Monocraft](https://github.com/Ciubix8513/Monocraft) (untill it's hopefully merged)
