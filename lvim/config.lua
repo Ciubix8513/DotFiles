@@ -2,6 +2,32 @@
  THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
  `lvim` is the global options object
 ]]
+lvim.autocommands = {
+  {
+    "BufNewFile", {
+    pattern = { "*.wgsl" },
+    callback = function()
+      vim.cmd [[set filetype=wgsl]]
+      vim.cmd [[set commentstring=//%s]]
+    end
+  } }, {
+  "BufEnter", {
+  pattern = { "*.wgsl" },
+  callback = function()
+    vim.cmd [[set filetype=wgsl]]
+    vim.cmd [[set commentstring=//%s]]
+  end
+} }, {
+  "BufWinEnter", {
+  pattern = { "*.wgsl" },
+  callback = function()
+    vim.cmd [[set filetype=wgsl]]
+    vim.cmd [[set commentstring=//%s]]
+  end
+},
+}
+}
+
 vim.opt.spell = true
 -- vim options
 vim.opt.shiftwidth = 2
@@ -12,7 +38,7 @@ vim.opt.relativenumber = true
 lvim.log.level = "info"
 lvim.format_on_save = {
   enabled = true,
-  pattern = "*.lua",
+  pattern = { "*.lua", "*.rs", "*.wgsl" },
   timeout = 1000,
 }
 -- to disable icons and use a minimalist setup, uncomment the following
@@ -22,6 +48,7 @@ lvim.format_on_save = {
 lvim.leader = "space"
 -- add your own keymapping
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
+
 
 -- lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 -- lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
@@ -59,8 +86,7 @@ lvim.builtin.treesitter.auto_install = true
 -- ---remove a server from the skipped list, e.g. eslint, or emmet_ls. IMPORTANT: Requires `:LvimCacheReset` to take effect
 -- ---`:LvimInfo` lists which server(s) are skipped for the current filetype
 -- lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
---   return server ~= "emmet_ls"
--- end, lvim.lsp.automatic_configuration.skipped_servers)
+--   return server ~= "emmet_ls" end, lvim.lsp.automatic_configuration.skipped_servers)
 
 -- -- you can set a custom on_attach function that will be used for all the language servers
 -- -- See <https://github.com/neovim/nvim-lspconfig#keybindings-and-completion>
@@ -95,16 +121,62 @@ lvim.builtin.treesitter.auto_install = true
 lvim.plugins = {
   {
     "wakatime/vim-wakatime",
-    "https://github.com/Ciubix8513/vim-colorschemes",
-    "lambdalisue/suda.vim"
+    "Ciubix8513/vim-colorschemes",
+    "lambdalisue/suda.vim",
+    "andweeb/presence.nvim",
+    {
+      "simrat39/rust-tools.nvim",
+    }
   },
 }
+local executors = require "rust-tools.executors"
+require("rust-tools").setup {
+  tools = {
+    executor = executors.toggleterm,
+    runnables = {
+      use_telescope = true,
+    },
+    autosethints = true,
+    inlay_hints = { show_parameter_hints = true },
+    -- hover_actions = { auto_focus = true }
+  },
+  server = {
+    on_attach = function(client, bufnr)
+      require("lvim.lsp").common_on_attach(client, bufnr)
+      local rt = require "rust-tools"
+      vim.keymap.set("n", "<leader>la", rt.code_action_group.code_action_group, { buffer = bufnr })
+    end,
+    on_init = require("lvim.lsp").common_on_init,
+    settings = {
+      ["rust-analyzer"] = {
+        lens = {
+          enable = true,
+        },
+        checkonsave = {
+          command = "clippy",
+        },
+      },
+    },
+  },
+}
+lvim.lsp.installer.setup.ensure_installed = {}
 
--- -- Autocommands (`:help autocmd`) <https://neovim.io/doc/user/autocmd.html>
--- vim.api.nvim_create_autocmd("FileType", {
---   pattern = "zsh",
---   callback = function()
---     -- let treesitter use bash highlight for zsh files as well
---     require("nvim-treesitter.highlight").attach(0, "bash")
---   end,
--- })
+
+
+--
+--
+-- require('rust-tools').inlay_hints.enable()
+
+
+
+-- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "wgsl_analyzer" })
+-- local opts =
+-- {
+--   filetypes = "wgsl"
+--   -- command: "wgsl_analyzer",
+--   -- "command": "wgsl_analyzer",
+--   -- "filetypes": ["wgsl"],
+-- }
+
+
+-- require("lvim.lsp.manager").setup("wgsl_analyzer", opts)
