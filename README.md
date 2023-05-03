@@ -9,6 +9,7 @@ Currently includes:
 - Picom
 - Rofi
 - Polybar
+- Spotify (Spicetify)
 
 The file setup.sh just puts all the config files in appropriate places, creating directories if necessary
 
