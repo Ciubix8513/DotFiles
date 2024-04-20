@@ -1,0 +1,76 @@
+// -*- mode: jsonc -*-
+{
+  "layer": "top", // Waybar at top layer
+  "output": "DP-1",
+  // "position": "bottom", // Waybar position (top|bottom|left|right)
+  "height": 30, // Waybar height (to be removed for auto height)
+  // "width": 1280, // Waybar width
+  "spacing": 10, // Gaps between modules (4px)
+  "margin": 10,
+  // Choose the order of the modules
+  "modules-left": [
+    "sway/workspaces",
+    "sway/window",
+    "sway/mode"
+  ],
+  "modules-right": [
+    "mpris",
+    "disk",
+    "pulseaudio",
+    "network",
+    "cpu",
+    "memory",
+    "keyboard-state",
+    "sway/language",
+    "clock",
+  ],
+  // "sway/mode": {
+  //   "format": "{}"
+  // },
+  // Modules configuration
+  "disk": {
+    "interval": 30,
+    "format": " <span foreground=\"#ddbb88\">{path}</span> {percentage_used}%",
+    "path": "/"
+  },
+  "mpris": {
+    "player": "spotify",
+    "format": "{title} : {artist}",
+    "dynamic-len": 20
+  },
+  "sway/workspaces": {
+    "all-outputs": true,
+    "format": "{name}",
+  },
+  "keyboard-state": {
+    "numlock": false,
+    "capslock": true,
+    "format": "{name}",
+  },
+  "clock": {
+    // "timezone": "America/New_York",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+    "format-alt": "{:%Y-%m-%d}",
+    "format": "<span foreground=\"#9966b8\">{:%H:%M}</span>"
+  },
+  "cpu": {
+    "format": "<span foreground=\"#9966b8\">CPU</span> {usage}%",
+    "tooltip": false
+  },
+  "memory": {
+    "format": "<span foreground=\"#9966b8\">RAM</span> {}%"
+  },
+  "network": {
+    "format-wifi": "<span foreground=\"#ddbb88\">{ifname}</span> {ipaddr}",
+    "format-ethernet": "{ifname} {ipaddr}",
+    "tooltip-format": "{ifname} via {gwaddr}",
+    "format-linked": "{ifname} (No IP)",
+    "format-disconnected": "{ifname} -",
+    "format-alt": "{ifname} {ipaddr}"
+  },
+  "pulseaudio": {
+    "scroll-step": 5, // %, can be a float
+    "format": "<span foreground=\"#9966b8\">VOL</span> {volume}%",
+    "on-click": ""
+  },
+}

@@ -1,53 +1,33 @@
-# i3 config file (v4)
-#
-# Please see https://i3wm.org/docs/userguide.html for a complete reference!
-
 set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
 font pango:monocraft  9
 
-
-# Start XDG autostart .desktop files using dex. See also
-# https://wiki.archlinux.org/index.php/XDG_Autostart
-exec --no-startup-id dex --autostart --environment i3
-
-# The combination of xss-lock, nm-applet and pactl is a popular choice, so
-# they are included here as an example. Modify as you see fit.
-
-# xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
-# screen before suspend. Use loginctl lock-session to lock your screen.
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
-
 # Use pactl to adjust volume in PulseAudio.
-set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% 
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle 
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle 
 
 # Playerctl stuff (Pause/Play/Next/Prev)
-bindsym XF86AudioPause exec --no-startup-id playerctl pause
-bindsym XF86AudioPlay exec --no-startup-id playerctl play 
+bindsym XF86AudioStop exec --no-startup-id playerctl stop 
+bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
 bindsym XF86AudioPrev exec --no-startup-id playerctl previous
 bindsym XF86AudioNext exec --no-startup-id playerctl next 
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-# move tiling windows via drag & drop by left-clicking into the title bar,
-# or left-clicking anywhere into the window while holding the floating modifier.
-tiling_drag modifier titlebar
-
 # start a terminal
-bindsym $mod+Return exec kitty
+bindsym $mod+Return exec kitty 
 
 # kill focused window
 bindcode $mod+Shift+24 kill
 
-# A more modern dmenu replacement is rofi:
+# Start dmenum
  bindcode $mod+40 exec "rofi -modi drun,run -show drun -theme maintheme"
+# bindcode $mod+40 exec "wofi --show drun"
 
 # change focus
 bindcode $mod+43 focus left
@@ -88,16 +68,14 @@ bindcode $mod+25 layout tabbed
 bindcode $mod+26 layout toggle split
 
 # toggle tiling / floating
-bindsym $mod+Shift+space floating toggle
+bindsym $mod+Shift+Tab floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+bindsym $mod+Tab focus mode_toggle
 
 # focus the parent container
 bindcode $mod+38 focus parent
 
-# focus the child container
-#bindsym $mod+d focus child
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
@@ -138,11 +116,8 @@ bindsym $mod+Shift+0 move container to workspace number $ws10;workspace number $
 
 
 # reload the configuration file
-bindcode $mod+Shift+54 reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindcode $mod+Shift+27 restart
-# exit i3 (logs you out of your X session)
-bindcode $mod+Shift+26 exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+r reload
+bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -171,23 +146,21 @@ mode "resize" {
 
 bindcode $mod+27 mode "resize"
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
 bar {
-  status_command polybar
+  status_command waybar 
   mode invisible 
 }
 
-#keyboard layout
-exec --no-startup-id setxkbmap -layout us,ru,epo -option gpr:win_space_toggle
+# define layouts
+input type:keyboard {
+        xkb_layout us,ru,epo
+}
 
+#layout switching
+bindsym $mod+Space input type:keyboard xkb_switch_layout next
 
 #screenshots
-bindsym Print exec --no-startup-id maim --select | xclip -selection clipboard -t image/png
-bindsym Shift+Print exec --no-startup-id maim  | xclip -selection clipboard -t image/png
-
-#enable touchpad tapping
-exec xinput set-prop 11 275 1
+bindsym Print exec --no-startup-id ~/.sway/sway-interactive-screenshot/sway-interactive-screenshot
 
 #start kitty on startup
 exec kitty
@@ -203,11 +176,8 @@ focus_follows_mouse no
 
 workspace_auto_back_and_forth yes
 
-#background
-exec --no-startup-id feh --bg-fill ~/Pictures/Background.png
+output * bg ~/Pictures/Background.png fill
 
-#For transparancy and stuff
-exec --no-startup-id picom -b
 
 #colors
 # class                 border  backgr. text    indicator child_border
@@ -219,4 +189,28 @@ client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 
 client.background       #000c18
 
-exec --no-startup-id ~/fixes/i3-unity-fix/build/lib/i3unityfix/i3unityfix.py & 
+bindsym $mod+Shift+p exec swaylock --image ~/Pictures/Background.png --show-failed-attempt -e -l --indicator-radius 100 --indicator-thickness 10 -K --font monocraft --font-size 30
+
+
+set $opacity 0.9
+for_window [class="Spotify"] opacity $opacity
+
+
+
+exec systemctl --user set-environment XDG_CURRENT_DESKTOP=sway
+exec systemctl --user import-environment DISPLAY \
+                                         SWAYSOCK \
+                                         WAYLAND_DISPLAY \
+                                         XDG_CURRENT_DESKTOP
+
+exec hash dbus-update-activation-environment 2>/dev/null && \
+     dbus-update-activation-environment --systemd DISPLAY \
+                                                  SWAYSOCK \
+                                                  XDG_CURRENT_DESKTOP=sway \
+                                                  WAYLAND_DISPLAY
+
+exec swaync
+
+bindsym $mod+Shift+n exec swaync-client -t -sw
+
+

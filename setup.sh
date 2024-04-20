@@ -1,20 +1,27 @@
 #!/bin/bash
 
-cp ./guake_pref ~/;
 cp ./.zshrc ~/;
+
 mkdir ~/.config/kitty;
 cp ./kitty.conf ~/.config/kitty/kitty.conf;
+
 mkdir ~/.config/lvim;
 cp ./lvim/config.lua ~/.config/lvim/;
-mkdir ~/.config/i3/
-cp ./i3/config ~/.config/i3/config
+
 mkdir ~/.config/rofi/
-cp ./i3/config.rasi ~/.config/rofi/
-cp ./i3/maintheme.rasi ~/.config/rofi/
-cp ./i3/picom.conf ~/.config/
-mkdir ~/.config/polybar/
-cp ./i3/config.ini ~/.config/polybar/
-cp ./i3/Background.png ~/Pictures/
+cp ./rofi/* ~/.config/rofi/
+
+cp ./swayfx/Background.png ~/Pictures/
+
+mkdir ~/.config/sway
+cp ./swayfx/config ~/.config/sway/
+
+mkidr ~/.config/waybar
+cp ./waybar/* ~/.config/waybar
+
+mkdir ~/.config/sway-interactive-screenshot
+cp ./sway-interactive-screenshot/config.toml ~/.config/sway-interactive-screenshot/
+
 mkdir ~/.config/spicetify/
 cp ./spotify/config-xpui.ini ~/.config/spicetify/config-xpui.ini
 mkdir ~/.config/spicetify/Themes/Sleek/
