@@ -1,7 +1,3 @@
---[[
- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
- `lvim` is the global options object
-]]
 lvim.autocommands = {
   -- wgsl buffer config
   {
@@ -246,13 +242,15 @@ lvim.builtin.treesitter.auto_install = true
 lvim.plugins = {
   {
     "kylechui/nvim-surround",
-    "Ciubix8513/vim-colorschemes",
+    "ciubix8513/vim-colorschemes",
+    "barrientosvctor/abyss.nvim",
     "lambdalisue/suda.vim",
-    "andweeb/presence.nvim",
     "p00f/clangd_extensions.nvim",
     "simrat39/rust-tools.nvim",
     "wakatime/vim-wakatime",
+    "iamcco/markdown-preview.nvim",
     "sakhnik/nvim-gdb",
+    "norcalli/nvim-colorizer.lua",
     {
       "danymat/neogen",
       config = true,
@@ -263,6 +261,7 @@ lvim.plugins = {
     }
   },
 }
+
 
 lvim.keys.normal_mode["<leader>lT"] = ":Translate ru -output=replace<cr>"
 lvim.keys.normal_mode["<leader>дЕ"] = ":Translate ru -output=replace<cr>"
@@ -295,6 +294,12 @@ require("rust-tools").setup {
     on_init = require("lvim.lsp").common_on_init,
     settings = {
       ["rust-analyzer"] = {
+        -- cargo = {
+        --   target = "wasm32-unknown-unknown"
+        -- },
+        procMacro = {
+          enable = true
+        },
         lens = {
           enable = true,
         },
@@ -309,28 +314,6 @@ lvim.lsp.installer.setup.ensure_installed = {}
 
 
 
---
---
--- require('rust-tools').inlay_hints.enable()
-
-
-
--- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "wgsl_analyzer" })
--- local opts =
--- {
---   filetypes = "wgsl"
---   -- command: "wgsl_analyzer",
---   -- "command": "wgsl_analyzer",
---   -- "filetypes": ["wgsl"],
--- }
-
-
--- require("lvim.lsp.manager").setup("wgsl_analyzer", opts)
---
---
---
-
--- lvim.lsp.diagnostics.virtual_text = true
 vim.diagnostic.config({ virtual_text = true })
 
 lvim.builtin.treesitter.highlight.enable = true
@@ -342,7 +325,8 @@ lvim.builtin.treesitter.ensure_installed = { "cpp", "c" }
 table.insert(lvim.plugins, {
 })
 
-vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "clangd", "csharp_ls" })
+-- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "clangd", "csharp_ls" })
+vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "clangd" })
 
 -- some settings can only passed as commandline flags, see `clangd --help`
 local clangd_flags = {
@@ -354,10 +338,10 @@ local clangd_flags = {
   "--suggest-missing-includes",
   "--cross-file-rename",
   "--completion-style=detailed",
-  "--pch-storage=memory",      -- could also be disk
+  "--pch-storage=memory",     -- could also be disk
   "--folding-ranges",
-  "--enable-config",           -- clangd 11+ supports reading from .clangd configuration file
-  "--offset-encoding=utf-16",  --temporary fix for null-ls
+  "--enable-config",          -- clangd 11+ supports reading from .clangd configuration file
+  "--offset-encoding=utf-16", --temporary fix for null-ls
   -- "--limit-references=1000",
   -- "--limit-resutls=1000",
   -- "--malloc-trim",
@@ -407,9 +391,12 @@ local opts = {
 }
 
 require("lvim.lsp.manager").setup("clangd", opts)
-require("lvim.lsp.manager").setup("csharp_ls")
+-- require("lvim.lsp.manager").setup("csharp_ls")
 require("lvim.lsp.manager").setup("neocmake")
 require("lvim.lsp.manager").setup("lua_ls")
+require("lvim.lsp.manager").setup("html")
+require("lvim.lsp.manager").setup("cssls")
+require("lvim.lsp.manager").setup("vimls")
 
 
 -- install codelldb with :MasonInstall codelldb
@@ -428,28 +415,50 @@ lvim.builtin.dap.on_config_done = function(dap)
     },
   }
 
-  dap.configurations.cpp = {
-    {
-      name = "Launch file",
-      type = "codelldb",
-      request = "launch",
-      program = function()
-        local path
-        vim.ui.input({ prompt = "Path to executable: ", default = vim.loop.cwd() .. "/build/" }, function(input)
-          path = input
-        end)
-        vim.cmd [[redraw]]
-        return path
-      end,
-      cwd = "${workspaceFolder}",
-      stopOnEntry = false,
-    },
-  }
+  dap.configurations.cpp = { {
+    name = "Launch file",
+    type = "codelldb",
+    request = "launch",
+    program = function()
+      local path
+      vim.ui.input({ prompt = "Path to executable: ", default = vim.loop.cwd() .. "/build/" }, function(input)
+        path = input
+      end)
+      vim.cmd [[redraw]]
+      return path
+    end,
+    cwd = "${workspaceFolder}",
+    stopOnEntry = false,
+  }, }
 
   dap.configurations.c = dap.configurations.cpp
+
+  dap.configurations.rust = { {
+    name = "Launch file",
+    type = "codelldb",
+    request = "launch",
+    program = function()
+      local path
+      vim.ui.input({ prompt = "Path to executable: ", default = vim.loop.cwd() .. "/target/debug/" }, function(input)
+        path = input
+      end)
+      vim.cmd [[redraw]]
+      return path
+    end,
+    args = function()
+      local arg
+      vim.ui.input({ prompt = "Arguments: " }, function(input)
+        arg = input
+      end)
+      vim.cmd [[redraw]]
+      return { arg }
+    end,
+
+    cwd = "${workspaceFolder}",
+    stopOnEntry = false,
+  }, }
 end
 
 
 lvim.builtin.indentlines.options.use_treesitter             = true
 lvim.builtin.indentlines.options.show_current_context_start = true
--- lvim.builtin.indentlines.options.indent_blankline_use_treesitter_scope = true
