@@ -1,3 +1,18 @@
+exec systemctl --user set-environment XDG_CURRENT_DESKTOP=sway
+exec systemctl --user import-environment DISPLAY \
+                                         SWAYSOCK \
+                                         WAYLAND_DISPLAY \
+                                         XDG_CURRENT_DESKTOP
+
+exec hash dbus-update-activation-environment 2>/dev/null && \
+     dbus-update-activation-environment --systemd DISPLAY \
+                                                  SWAYSOCK \
+                                                  XDG_CURRENT_DESKTOP=sway \
+                                                  WAYLAND_DISPLAY
+
+output DP-1 pos 0 0 res 1920x1080@60Hz
+output HDMI-A-2 pos 1920 0 res 1920x1080@60Hz
+
 set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
@@ -16,11 +31,15 @@ bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
 bindsym XF86AudioPrev exec --no-startup-id playerctl previous
 bindsym XF86AudioNext exec --no-startup-id playerctl next 
 
+bindsym pause exec --no-startup-id pactl set-source-mute alsa_input.usb-Generalplus_Usb_Audio_Device-00.mono-fallback toggle
+
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Return exec kitty 
+bindsym $mod+C exec --no-startup-id gnome-calculator
+bindsym $mod+N exec --no-startup-id nautilus
 
 # kill focused window
 bindcode $mod+Shift+24 kill
@@ -63,8 +82,11 @@ bindcode $mod+55 split v
 bindcode $mod+41 fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
+# s
 bindcode $mod+39 layout stacking
+# w
 bindcode $mod+25 layout tabbed
+# e
 bindcode $mod+26 layout toggle split
 
 # toggle tiling / floating
@@ -161,6 +183,9 @@ bindsym $mod+Space input type:keyboard xkb_switch_layout next
 
 #screenshots
 bindsym Print exec --no-startup-id ~/.sway/sway-interactive-screenshot/sway-interactive-screenshot
+bindsym Print+Shift exec --no-startup-id ~/.sway/sway-interactive-screenshot/sway-interactive-screenshot --video
+
+# bindsym Ctrl+$mod+Alt+Shift+L exec firefox
 
 #start kitty on startup
 exec kitty
@@ -189,7 +214,7 @@ client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 
 client.background       #000c18
 
-bindsym $mod+Shift+p exec swaylock --image ~/Pictures/Background.png --show-failed-attempt -e -l --indicator-radius 100 --indicator-thickness 10 -K --font monocraft --font-size 30
+bindsym $mod+Shift+p exec swaylock --image ~/Pictures/wallpaper_mc_1.png --show-failed-attempt -e -l --indicator-radius 100 --indicator-thickness 10 -K --font monocraft --font-size 30
 
 
 set $opacity 0.9
@@ -197,20 +222,21 @@ for_window [class="Spotify"] opacity $opacity
 
 
 
-exec systemctl --user set-environment XDG_CURRENT_DESKTOP=sway
-exec systemctl --user import-environment DISPLAY \
-                                         SWAYSOCK \
-                                         WAYLAND_DISPLAY \
-                                         XDG_CURRENT_DESKTOP
-
-exec hash dbus-update-activation-environment 2>/dev/null && \
-     dbus-update-activation-environment --systemd DISPLAY \
-                                                  SWAYSOCK \
-                                                  XDG_CURRENT_DESKTOP=sway \
-                                                  WAYLAND_DISPLAY
 
 exec swaync
 
 bindsym $mod+Shift+n exec swaync-client -t -sw
+
+# Blank the screen after 10 min of inactivity
+exec screen -X -S swayidle  quit 
+exec screen -dmS "swayidle" swayidle -s -w timeout 300 'swaymsg "output * power off"' resume 'swaymsg "output * power on"'
+
+input 1386:884:Wacom_Intuos_S_Pen map_to_output DP-1
+
+bindsym $mod+F9 output "DP-2" toggle
+
+# animation_duration_ms 200
+# shadows enable
+
 
 
